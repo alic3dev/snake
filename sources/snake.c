@@ -13,6 +13,7 @@
 #include "display.h"
 #include "game_logo.h"
 #include "get_micro_time.h"
+#include "interupt_handler.h"
 #include "key_values.h"
 #include "position.h"
 #include "terminal_size.h"
@@ -45,9 +46,7 @@ int valid_inputs[__SNAKE_C_VALID_INPUTS_LENGTH] = {
 int main() {
   srand(get_micro_time());
 
-  struct sigaction signal_action;
-  signal_action.sa_handler = interupt_handler;
-  sigaction(SIGINT, &signal_action, NULL);
+  interupt_handler_initialize();
 
   struct position* terminal_size = get_terminal_size();
   terminal_size->y -= 1;
@@ -251,6 +250,13 @@ int main() {
     }
 
     display_print(display);
+
+    if (interupted == 1) {
+      keep_running = 0;
+      pthread_mutex_lock(&keep_running_mutex);
+      keep_running_lockable = 0;
+      pthread_mutex_unlock(&keep_running_mutex);
+    }
   }
 
   printf("Press any key to exit\n");
@@ -330,13 +336,6 @@ void* get_user_input() {
     TCSANOW,
     &termios_attrs_original
   );
-}
-
-void interupt_handler(int _) {
-  keep_running = 0;
-  pthread_mutex_lock(&keep_running_mutex);
-  keep_running_lockable = 0;
-  pthread_mutex_unlock(&keep_running_mutex);
 }
 
 struct position* place_apple(
