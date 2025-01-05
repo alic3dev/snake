@@ -1,0 +1,19 @@
+#ifndef __KEY_VALUES_H
+#define __KEY_VALUES_H
+
+#define KEY_VALUE_ARROW_UP 65
+#define KEY_VALUE_ARROW_DOWN 66
+#define KEY_VALUE_ARROW_RIGHT 67
+#define KEY_VALUE_ARROW_LEFT 68
+
+#define KEY_VALUE_A 97
+#define KEY_VALUE_D 100
+#define KEY_VALUE_I 105
+#define KEY_VALUE_J 106
+#define KEY_VALUE_K 107
+#define KEY_VALUE_L 108
+#define KEY_VALUE_S 115
+#define KEY_VALUE_W 119
+
+#endif
+
