@@ -10,6 +10,7 @@
 
 #include "snake.h"
 #include "direction.h"
+#include "display.h"
 #include "game_logo.h"
 #include "get_micro_time.h"
 #include "key_values.h"
@@ -56,23 +57,9 @@ int main() {
     return 1;
   }
 
-  unsigned char* buffer;
-  unsigned char* buffer_frame;
-  size_t buffer_length = (
-    (terminal_size->x + 1) *
-    terminal_size->y +
-    1
-  );
-  buffer = malloc(sizeof(char) * buffer_length);
-  buffer_frame = malloc(sizeof(char) * buffer_length);
-  initialize_buffer(buffer, terminal_size);
-  buffer[buffer_length - 1] = '\0';
-  memcpy(
-    buffer_frame,
-    buffer,
-    sizeof(char) * buffer_length
-  );
-  unsigned char buffer_should_rerender = 1;
+  struct display* display;
+  display = malloc(sizeof(struct display));
+  display_initialize(display, terminal_size);
 
   size_t snake_length = 1;
   struct position** snake;
@@ -239,37 +226,31 @@ int main() {
           );
         }
       }
-      buffer_should_rerender = 1;
+      display->should_render = 1;
 
       snake_direction_previous = snake_direction;
       time_snake_previous = time_current;
     }
 
-    if (buffer_should_rerender) {
-      memcpy(
-        buffer,
-        buffer_frame,
-        sizeof(char) * buffer_length
-      );
-    
+    if (display->should_render) {
+      display_use_frame(display);
+
       for (size_t i = 0; i < snake_length; ++i) {
-        buffer[
+        display->buffer[
           snake[i]->x +
           (snake[i]->y * (terminal_size->x + 1))
         ] = i == 0 ? '0' : '8';
       }
 
       if (apple_position != NULL) {
-        buffer[
+        display->buffer[
           apple_position->x +
           (apple_position->y * (terminal_size->x + 1))
         ] = '@';
       }
     }
 
-    if (buffer_should_rerender) {
-      printf("\r\n%s\n", buffer);
-    }
+    display_print(display);
   }
 
   printf("Press any key to exit\n");
@@ -279,8 +260,9 @@ int main() {
   pthread_mutex_destroy(&user_input_mutex);
 
   free(terminal_size);
-  free(buffer);
-  free(buffer_frame);
+
+  display_destroy(display);
+  free(display);
 
   for(size_t i = 0; i < snake_length; i++){
     free(snake[i]);
@@ -458,42 +440,5 @@ struct position* place_apple(
     free(apple_position);
     return NULL;
   }
-}
-
-void initialize_buffer(
-  unsigned char *buffer,
-  struct position* terminal_size
-) { 
-  for (size_t y = 0; y < terminal_size->y; ++y) {
-    size_t y_offset = y * (terminal_size->x + 1);
-
-    for (size_t x = 0; x <= terminal_size->x; ++x) {
-      size_t i = y_offset + x;
-
-      if (x == terminal_size->x) {
-        buffer[i] = '\n';
-      } else if (x == terminal_size->x - 1) {
-        if (y == 0) {
-          buffer[i] = '\\';
-        } else if (y == terminal_size->y - 1) {
-          buffer[i] = '/';
-        } else {
-          buffer[i] = '|';
-        }
-      } else if (x == 0) {
-        if (y == 0) {
-          buffer[i] = '/';
-        } else if (y == terminal_size->y - 1) {
-          buffer[i] = '\\';
-        } else {
-          buffer[i] = '|';
-        }
-      } else if (y == 0 || y == terminal_size->y - 1) {
-        buffer[i] = '-';
-      } else {
-        buffer[i] = ' ';
-      }
-    }
-  } 
 }
 
