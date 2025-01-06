@@ -1,6 +1,5 @@
 #include <pthread.h>
 #include <stddef.h>
-#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,8 +10,7 @@
 #include "snake.h"
 #include "direction.h"
 #include "display.h"
-#include "game_logo.h"
-#include "get_micro_time.h"
+#include "micro_time.h"
 #include "interupt_handler.h"
 #include "key_values.h"
 #include "position.h"
@@ -72,7 +70,7 @@ int main() {
   snake_position_previous = malloc(sizeof(struct position));
   enum direction snake_direction = UP;
   enum direction snake_direction_previous = DOWN;
-  unsigned long long int snake_speed = 100000;
+  micro_time snake_speed = 100000;
   unsigned char collided = 0;
 
   struct position* apple_position;
@@ -93,7 +91,7 @@ int main() {
     NULL
   );
 
-  unsigned long long int time_snake_previous = (
+  micro_time time_snake_previous = (
     get_micro_time()
   );
 
@@ -135,10 +133,10 @@ int main() {
     user_input = -1;
     pthread_mutex_unlock(&user_input_mutex);
 
-    unsigned long long int time_current = (
+    micro_time time_current = (
       get_micro_time()
     );
-    unsigned long long int time_snake_delta = (
+    micro_time time_snake_delta = (
       time_current - time_snake_previous
     );
 

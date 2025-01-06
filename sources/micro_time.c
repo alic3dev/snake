@@ -1,18 +1,18 @@
 #include <stddef.h>
 #include <sys/time.h>
 
-#include "get_micro_time.h"
+#include "micro_time.h"
 
-unsigned long long int get_micro_time() {
+micro_time get_micro_time() {
   struct timeval time_val;
 
   gettimeofday(&time_val, NULL);
 
-  unsigned long long micro_time = (
+  micro_time current_micro_time = (
     (time_val.tv_sec * 1000000) +
     time_val.tv_usec
   );
 
-  return micro_time;
+  return current_micro_time;
 }
 
