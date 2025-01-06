@@ -6,16 +6,28 @@
 
 #include "snake.h"
 #include "display.h"
+#include "interupt_handler.h"
 #include "keep_running.h"
 #include "micro_time.h"
 #include "mode_all.h"
-#include "interupt_handler.h"
+#include "options.h"
 #include "position.h"
+#include "print_usage.h"
 #include "terminal_size.h"
 #include "user_input.h"
 
-int main(int argc, char* argv[]) {
-  srand(get_micro_time());
+int main(int argc, char** argv) {
+  struct options options;
+  unsigned char options_invalid = (
+    options_initialize(&options, argc, argv)
+  );
+
+  if (options_invalid == 1) {
+    print_usage(1);
+    return options_invalid;
+  }
+
+  srand(options.seed);
 
   keep_running_initialize();
   interupt_handler_initialize();
@@ -47,10 +59,19 @@ int main(int argc, char* argv[]) {
   mode_initialize(INTRO, &mode_intro, &display);
   mode_initialize(MENU, &mode_menu, &display);
 
-  enum MODE mode_current = INTRO;
-  enum MODE mode_previous = mode_current;
-  void* mode_struct = &mode_intro;
+  enum MODE mode_current;
+  void* mode_struct;
 
+  if (options.skip_intro == 1) {
+    mode_current = GAME;
+    mode_struct = &mode_game;
+  } else {
+    mode_current = INTRO;
+    mode_struct = &mode_intro;
+  }
+
+  enum MODE mode_previous = mode_current;
+  
   user_input_thread_start();
 
   unsigned char _keep_running = 1;
