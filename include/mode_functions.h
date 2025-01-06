@@ -5,12 +5,15 @@
 #include "micro_time.h" 
 #include "mode.h"
 
-void mode_initialize(enum MODE, void*);
-enum MODE mode_poll(enum MODE, void*, micro_time);
-void mode_display(
+void mode_initialize(
   enum MODE,
   void*,
   struct display*
+);
+enum MODE mode_poll(enum MODE, void*, micro_time);
+void mode_display(
+  enum MODE,
+  void*
 );
 void mode_destroy(enum MODE, void*);
 

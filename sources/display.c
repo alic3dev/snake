@@ -9,8 +9,11 @@ void display_initialize(
   struct display* display,
   struct position* terminal_size
 ) {
+  display->terminal_size = terminal_size;
   display->buffer_length = (
-    (terminal_size->x + 1) * terminal_size->y + 1
+    ((display->terminal_size->x + 1) * 
+    display->terminal_size->y) +
+    1
   );
   display->buffer = malloc(
     sizeof(unsigned char) * display->buffer_length
@@ -46,22 +49,34 @@ void display_initialize(
     sizeof(unsigned char) * display->buffer_length
   );
 
-  for (size_t y = 0; y < terminal_size->y; ++y) {
-    size_t y_offset = y * (terminal_size->x + 1);
+  for (
+    size_t y = 0;
+    y < display->terminal_size->y;
+    ++y
+  ) {
+    size_t y_offset = (
+      y * (
+        display->terminal_size->x + 1
+      )
+    );
 
     for (
       size_t x = 0;
-      x <= terminal_size->x;
+      x <= display->terminal_size->x;
       ++x
     ) {
       size_t i = y_offset + x;
 
-      if (x == terminal_size->x) {
+      if (x == display->terminal_size->x) {
         display->buffer_frame[i] = '\n';
-      } else if (x == terminal_size->x - 1) {
+      } else if (
+        x == display->terminal_size->x - 1
+      ) {
         if (y == 0) {
           display->buffer_frame[i] = '\\';
-        } else if (y == terminal_size->y - 1) {
+        } else if (
+          y == display->terminal_size->y - 1
+        ) {
           display->buffer_frame[i] = '/';
         } else {
           display->buffer_frame[i] = '|';
@@ -69,17 +84,22 @@ void display_initialize(
       } else if (x == 0) {
         if (y == 0) {
           display->buffer_frame[i] = '/';
-        } else if (y == terminal_size->y - 1) {
+        } else if (
+          y == display->terminal_size->y - 1
+        ) {
           display->buffer_frame[i] = '\\';
         } else {
           display->buffer_frame[i] = '|';
         }
-      } else if (y == 0 || y == terminal_size->y - 1) {
+      } else if (
+        y == 0 ||
+        y == display->terminal_size->y - 1
+      ) {
         display->buffer_frame[i] = '-';
       }
     }
   }
-
+  
   display->should_render = 1;
 }
 

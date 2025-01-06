@@ -5,7 +5,8 @@
 #include "mode.h"
 
 void mode_intro_initialize(
-  struct mode_intro* mode_intro
+  struct mode_intro* mode_intro,
+  struct display* display
 ) {
 }
 
@@ -17,8 +18,7 @@ enum MODE mode_intro_poll(
 }
 
 void mode_intro_display(
-  struct mode_intro* mode_intro,
-  struct display* display
+  struct mode_intro* mode_intro
 ) {
 }
 

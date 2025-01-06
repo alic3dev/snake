@@ -11,6 +11,7 @@ struct display {
   unsigned char *buffer_empty;
   size_t buffer_length;
   unsigned char should_render;
+  struct position* terminal_size;
 };
 
 void display_initialize(

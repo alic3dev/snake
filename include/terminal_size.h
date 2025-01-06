@@ -3,7 +3,7 @@
 
 #include "position.h"
 
-struct position* get_terminal_size();
+void terminal_size_initialize(struct position*);
 
 #endif
 

@@ -9,20 +9,24 @@
 
 void mode_initialize(
   enum MODE mode,
-  void* mode_struct
+  void* mode_struct,
+  struct display* display
 ) {
   switch (mode) {
     case GAME:
       return mode_game_initialize(
-        (struct mode_game*) mode_struct
+        (struct mode_game*) mode_struct,
+        display
       );
     case INTRO:
       return mode_intro_initialize(
-        (struct mode_intro*) mode_struct
+        (struct mode_intro*) mode_struct,
+        display
       );
     case MENU:
       return mode_menu_initialize(
-        (struct mode_menu*) mode_struct
+        (struct mode_menu*) mode_struct,
+        display
       );
     default:
       break;
@@ -59,24 +63,20 @@ enum MODE mode_poll(
 
 void mode_display(
   enum MODE mode,
-  void* mode_struct,
-  struct display* display
+  void* mode_struct
 ) {
   switch (mode) {
     case GAME:
       return mode_game_display(
-        (struct mode_game*) mode_struct,
-        display
+        (struct mode_game*) mode_struct
       );
     case INTRO:
       return mode_intro_display(
-        (struct mode_intro*) mode_struct,
-        display
+        (struct mode_intro*) mode_struct
       );
     case MENU:
       return mode_menu_display(
-        (struct mode_menu*) mode_struct,
-        display
+        (struct mode_menu*) mode_struct
       );
     default:
       break;

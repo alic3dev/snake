@@ -6,17 +6,18 @@
 #include "display.h"
 
 struct mode_intro {
+  struct display* display;
 };
 
-void mode_intro_initialize(struct mode_intro*);
+void mode_intro_initialize(
+  struct mode_intro*,
+  struct display*
+);
 enum MODE mode_intro_poll(
   struct mode_intro*,
   micro_time
 );
-void mode_intro_display(
-  struct mode_intro*,
-  struct display*
-);
+void mode_intro_display(struct mode_intro*);
 void mode_intro_destroy(struct mode_intro*);
 
 #endif
