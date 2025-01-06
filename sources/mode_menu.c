@@ -8,13 +8,14 @@ void mode_menu_initialize(
   struct mode_menu* mode_menu,
   struct display* display
 ) {
+  mode_menu->display = display;
 }
 
 enum MODE mode_menu_poll(
   struct mode_menu* mode_menu,
   micro_time current_micro_time
 ) {
-  return MENU;
+  return GAME;
 }
 
 void mode_menu_display(

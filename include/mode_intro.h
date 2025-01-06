@@ -7,6 +7,12 @@
 
 struct mode_intro {
   struct display* display;
+  micro_time micro_time_previous;
+  micro_time speed;
+  size_t progress;
+  unsigned char** buffer;
+  size_t x_offset;
+  size_t y_offset;
 };
 
 void mode_intro_initialize(

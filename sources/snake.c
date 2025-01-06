@@ -14,7 +14,7 @@
 #include "terminal_size.h"
 #include "user_input.h"
 
-int main() {
+int main(int argc, char* argv[]) {
   srand(get_micro_time());
 
   keep_running_initialize();
@@ -40,10 +40,16 @@ int main() {
   display_initialize(&display, &terminal_size);
   
   struct mode_game mode_game;
+  struct mode_intro mode_intro;
+  struct mode_menu mode_menu;
+
   mode_initialize(GAME, &mode_game, &display);
-  
-  enum MODE mode_current = GAME;
-  void* mode_struct = &mode_game;
+  mode_initialize(INTRO, &mode_intro, &display);
+  mode_initialize(MENU, &mode_menu, &display);
+
+  enum MODE mode_current = INTRO;
+  enum MODE mode_previous = mode_current;
+  void* mode_struct = &mode_intro;
 
   user_input_thread_start();
 
@@ -53,11 +59,33 @@ int main() {
       get_micro_time()
     );
 
-    mode_poll(
+    mode_current = mode_poll(
       mode_current,
       mode_struct,
       time_current
     );
+
+    if (mode_current != mode_previous) {
+      switch (mode_current) {
+        case GAME:
+          mode_struct = &mode_game;
+          break;
+        case INTRO:
+          mode_struct = &mode_intro;
+          break;
+        case MENU:
+          mode_struct = &mode_menu;
+          break;
+        default:
+          mode_current = INTRO;
+          mode_struct = &mode_intro;
+          break;
+      }
+
+      mode_previous = mode_current;
+      continue;
+    }
+
     mode_display(mode_current, mode_struct);
 
     display_print(&display);
@@ -77,6 +105,9 @@ int main() {
   keep_running_destroy();
   
   mode_destroy(GAME, &mode_game);
+  mode_destroy(INTRO, &mode_intro);
+  mode_destroy(MENU, &mode_menu);
+  
   display_destroy(&display);
 
   return 0;

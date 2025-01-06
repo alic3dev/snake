@@ -33,8 +33,12 @@ struct position* place_apple(
   do {
     is_invalid_position = 0;
 
-    apple_position->x = (rand() % (terminal_size->x - 3)) + 1;
-    apple_position->y = (rand() % (terminal_size->y - 2)) + 1;
+    apple_position->x = (
+      rand() % (terminal_size->x - 3)
+    ) + 1;
+    apple_position->y = (
+      rand() % (terminal_size->y - 2)
+    ) + 1;
 
     for (
       size_t i = 0;
@@ -42,8 +46,10 @@ struct position* place_apple(
       ++i
     ) {
       if (
-        apple_position->x == attempted_positions[i]->x &&
-        apple_position->y == attempted_positions[i]->y
+        apple_position->x ==
+        attempted_positions[i]->x &&
+        apple_position->y ==
+        attempted_positions[i]->y
       ) {
         is_invalid_position = 1;
         break;
@@ -53,7 +59,7 @@ struct position* place_apple(
     for (
       size_t i = 0;
       i < snake_length;
-      i++
+      ++i
     ) {
       if (
         apple_position->x == snake[i]->x &&
@@ -67,7 +73,8 @@ struct position* place_apple(
     attempted_positions_length += 1;
     attempted_positions = realloc(
       attempted_positions, 
-      sizeof(struct position*) * attempted_positions_length
+      sizeof(struct position*) *
+        attempted_positions_length
     );
 
     attempted_positions[
@@ -84,7 +91,7 @@ struct position* place_apple(
     if (is_invalid_position == 0) {
       placed = 1;
     } else {
-      iterations++;
+      iterations += 1;
     }
   } while(
     iterations < total_size &&

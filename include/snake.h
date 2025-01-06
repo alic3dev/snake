@@ -1,15 +1,7 @@
 #ifndef __SNAKE_H
 #define __SNAKE_H
 
-#include "position.h"
-
-int main();
-void* get_user_input();
-struct position* place_apple(
-  struct position**,
-  size_t,
-  struct position*
-);
+int main(int argc, char* argv[]);
 
 #endif
 
