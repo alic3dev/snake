@@ -245,7 +245,10 @@ enum MODE mode_game_poll(
           mode_game->display->terminal_size
         );
       }
+    } else {
+      return MODE_MENU;
     }
+
     mode_game->display->should_render = 1;
 
     mode_game->snake_direction_previous = (
@@ -257,7 +260,7 @@ enum MODE mode_game_poll(
     );
   }
 
-  return GAME;
+  return MODE_GAME;
 }
 
 void mode_game_display(

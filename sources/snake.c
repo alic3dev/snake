@@ -51,22 +51,40 @@ int main(int argc, char** argv) {
   struct display display;
   display_initialize(&display, &terminal_size);
   
+  struct mode_exit mode_exit;
   struct mode_game mode_game;
   struct mode_intro mode_intro;
   struct mode_menu mode_menu;
 
-  mode_initialize(GAME, &mode_game, &display);
-  mode_initialize(INTRO, &mode_intro, &display);
-  mode_initialize(MENU, &mode_menu, &display);
+  mode_initialize(
+    MODE_EXIT,
+    &mode_exit,
+    &display
+  );
+  mode_initialize(
+    MODE_GAME,
+    &mode_game,
+    &display
+  );
+  mode_initialize(
+    MODE_INTRO,
+    &mode_intro,
+    &display
+  );
+  mode_initialize(
+    MODE_MENU,
+    &mode_menu,
+    &display
+  );
 
   enum MODE mode_current;
   void* mode_struct;
 
   if (options.skip_intro == 1) {
-    mode_current = GAME;
-    mode_struct = &mode_game;
+    mode_current = MODE_MENU;
+    mode_struct = &mode_menu;
   } else {
-    mode_current = INTRO;
+    mode_current = MODE_INTRO;
     mode_struct = &mode_intro;
   }
 
@@ -75,7 +93,15 @@ int main(int argc, char** argv) {
   user_input_thread_start();
 
   unsigned char _keep_running = 1;
-  while (_keep_running) {
+  while (_keep_running == 1) {
+    if (interupted == 1) {
+      mode_current = MODE_EXIT;
+      mode_previous = MODE_EXIT;
+      mode_struct = &mode_exit;
+
+      display.should_render = 1;
+    }
+
     micro_time time_current = (
       get_micro_time()
     );
@@ -88,20 +114,33 @@ int main(int argc, char** argv) {
 
     if (mode_current != mode_previous) {
       switch (mode_current) {
-        case GAME:
-          mode_struct = &mode_game;
+        case MODE_EXIT:
+          mode_struct = &mode_exit;
           break;
-        case INTRO:
+        case MODE_GAME:
+          mode_struct = &mode_game;
+
+          mode_destroy(MODE_GAME, &mode_game);
+
+          mode_initialize(
+            MODE_GAME,
+            &mode_game,
+            &display
+          );
+          break;
+        case MODE_INTRO:
           mode_struct = &mode_intro;
           break;
-        case MENU:
+        case MODE_MENU:
           mode_struct = &mode_menu;
           break;
         default:
-          mode_current = INTRO;
-          mode_struct = &mode_intro;
+          mode_current = MODE_EXIT;
+          mode_struct = &mode_exit;
           break;
       }
+      
+      display.should_render = 1;
 
       mode_previous = mode_current;
       continue;
@@ -111,24 +150,29 @@ int main(int argc, char** argv) {
 
     display_print(&display);
 
-    if (interupted == 1) {
-      _keep_running = 0;
-      pthread_mutex_lock(&keep_running_mutex);
-      keep_running = 0;
-      pthread_mutex_unlock(&keep_running_mutex);
+    if (mode_current == MODE_EXIT) {
+      pthread_mutex_lock(
+        &user_input_thread_running_mutex
+      );
+      if (user_input_thread_running == 0) {
+        _keep_running = 0;
+      }
+      pthread_mutex_unlock(
+        &user_input_thread_running_mutex
+      );
     }
   }
 
-  printf("Press any key to exit\n");
   user_input_thread_join();
   user_input_destroy();
 
   keep_running_destroy();
   
-  mode_destroy(GAME, &mode_game);
-  mode_destroy(INTRO, &mode_intro);
-  mode_destroy(MENU, &mode_menu);
-  
+  mode_destroy(MODE_EXIT, &mode_exit);
+  mode_destroy(MODE_GAME, &mode_game);
+  mode_destroy(MODE_INTRO, &mode_intro);
+  mode_destroy(MODE_MENU, &mode_menu);
+
   display_destroy(&display);
 
   return 0;

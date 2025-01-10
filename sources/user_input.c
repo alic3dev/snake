@@ -14,6 +14,8 @@ int user_input = -1;
 int valid_inputs[
   __USER_INPUT_VALID_INPUTS_LENGTH
 ] = {
+  KEY_VALUE_ENTER,
+  KEY_VALUE_SPACE,
   KEY_VALUE_ARROW_UP,
   KEY_VALUE_ARROW_DOWN,
   KEY_VALUE_ARROW_RIGHT,
@@ -28,17 +30,33 @@ int valid_inputs[
   KEY_VALUE_J
 };
 
+unsigned char user_input_thread_running = 0;
+
 pthread_mutex_t user_input_mutex;
+pthread_mutex_t user_input_thread_running_mutex;
+
 pthread_t user_input_thread;
 
 void user_input_thread_start() {
   pthread_mutex_init(&user_input_mutex, NULL);
+  pthread_mutex_init(
+    &user_input_thread_running_mutex,
+    NULL
+  );
 
   pthread_create(
     &user_input_thread,
     NULL,
     __user_input_get,
     NULL
+  );
+
+  pthread_mutex_lock(
+    &user_input_thread_running_mutex
+  );
+  user_input_thread_running = 1;
+  pthread_mutex_unlock(
+    &user_input_thread_running_mutex
   );
 }
 
@@ -101,6 +119,14 @@ void* __user_input_get() {
     STDIN_FILENO,
     TCSANOW,
     &termios_attrs_original
+  );
+
+  pthread_mutex_lock(
+    &user_input_thread_running_mutex
+  );
+  user_input_thread_running = 0;
+  pthread_mutex_unlock(
+    &user_input_thread_running_mutex
   );
 }
 

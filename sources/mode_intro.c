@@ -58,7 +58,7 @@ enum MODE mode_intro_poll(
   );
 
   if (micro_time_delta < mode_intro->speed) {
-    return INTRO;
+    return MODE_INTRO;
   }
   
   if (
@@ -101,10 +101,10 @@ enum MODE mode_intro_poll(
     mode_intro->progress >= 
     game_logo_total_size * 2
   ) {
-    return MENU;
+    return MODE_MENU;
   }
   
-  return INTRO;
+  return MODE_INTRO;
 }
 
 void mode_intro_display(

@@ -3,6 +3,7 @@
 #include "display.h"
 #include "micro_time.h"
 #include "mode.h"
+#include "mode_exit.h"
 #include "mode_game.h"
 #include "mode_intro.h"
 #include "mode_menu.h"
@@ -13,17 +14,22 @@ void mode_initialize(
   struct display* display
 ) {
   switch (mode) {
-    case GAME:
+    case MODE_EXIT:
+      return mode_exit_initialize(
+        (struct mode_exit*) mode_struct,
+        display
+      );
+    case MODE_GAME:
       return mode_game_initialize(
         (struct mode_game*) mode_struct,
         display
       );
-    case INTRO:
+    case MODE_INTRO:
       return mode_intro_initialize(
         (struct mode_intro*) mode_struct,
         display
       );
-    case MENU:
+    case MODE_MENU:
       return mode_menu_initialize(
         (struct mode_menu*) mode_struct,
         display
@@ -39,17 +45,22 @@ enum MODE mode_poll(
   micro_time current_micro_time
 ) {
   switch (mode) {
-    case GAME:
+    case MODE_EXIT:
+      return mode_exit_poll(
+        (struct mode_exit*) mode_struct,
+        current_micro_time
+      );
+    case MODE_GAME:
       return mode_game_poll(
         (struct mode_game*) mode_struct,
         current_micro_time
       );
-    case INTRO:
+    case MODE_INTRO:
       return mode_intro_poll(
         (struct mode_intro*) mode_struct,
         current_micro_time
       );
-    case MENU:
+    case MODE_MENU:
       return mode_menu_poll(
         (struct mode_menu*) mode_struct,
         current_micro_time
@@ -58,7 +69,7 @@ enum MODE mode_poll(
       break;
   }
 
-  return INTRO;
+  return MODE_EXIT;
 }
 
 void mode_display(
@@ -66,15 +77,19 @@ void mode_display(
   void* mode_struct
 ) {
   switch (mode) {
-    case GAME:
+    case MODE_EXIT:
+      return mode_exit_display(
+        (struct mode_exit*) mode_struct
+      );
+    case MODE_GAME:
       return mode_game_display(
         (struct mode_game*) mode_struct
       );
-    case INTRO:
+    case MODE_INTRO:
       return mode_intro_display(
         (struct mode_intro*) mode_struct
       );
-    case MENU:
+    case MODE_MENU:
       return mode_menu_display(
         (struct mode_menu*) mode_struct
       );
@@ -89,15 +104,19 @@ void mode_destroy(
   void* mode_struct
 ) {
   switch (mode) {
-    case GAME:
+    case MODE_EXIT:
+      return mode_exit_destroy(
+        (struct mode_exit*) mode_struct
+      );
+    case MODE_GAME:
       return mode_game_destroy(
         (struct mode_game*) mode_struct
       );
-    case INTRO:
+    case MODE_INTRO:
       return mode_intro_destroy(
         (struct mode_intro*) mode_struct
       );
-    case MENU:
+    case MODE_MENU:
       return mode_menu_destroy(
         (struct mode_menu*) mode_struct
       );

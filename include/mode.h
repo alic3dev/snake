@@ -2,9 +2,10 @@
 #define __MODE_H
 
 enum MODE {
-  INTRO,
-  GAME,
-  MENU
+  MODE_INTRO,
+  MODE_GAME,
+  MODE_MENU,
+  MODE_EXIT
 };
 
 #endif
