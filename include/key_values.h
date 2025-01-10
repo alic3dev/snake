@@ -1,6 +1,9 @@
 #ifndef __KEY_VALUES_H
 #define __KEY_VALUES_H
 
+#define KEY_VALUE_ENTER 13
+#define KEY_VALUE_SPACE 32
+
 #define KEY_VALUE_ARROW_UP 65
 #define KEY_VALUE_ARROW_DOWN 66
 #define KEY_VALUE_ARROW_RIGHT 67
