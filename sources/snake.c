@@ -13,6 +13,7 @@
 #include "options.h"
 #include "position.h"
 #include "print_usage.h"
+#include "score.h"
 #include "terminal_size.h"
 #include "user_input.h"
 
@@ -50,11 +51,17 @@ int main(int argc, char** argv) {
 
   struct display display;
   display_initialize(&display, &terminal_size);
-  
+
+  struct score score;
+
   struct mode_exit mode_exit;
   struct mode_game mode_game;
+  struct mode_gameover mode_gameover;
   struct mode_intro mode_intro;
   struct mode_menu mode_menu;
+
+  mode_game.score = &score;
+  mode_gameover.score = &score;
 
   mode_initialize(
     MODE_EXIT,
@@ -64,6 +71,11 @@ int main(int argc, char** argv) {
   mode_initialize(
     MODE_GAME,
     &mode_game,
+    &display
+  );
+  mode_initialize(
+    MODE_GAMEOVER,
+    &mode_gameover,
     &display
   );
   mode_initialize(
@@ -128,6 +140,20 @@ int main(int argc, char** argv) {
             &display
           );
           break;
+        case MODE_GAMEOVER:
+          mode_struct = &mode_gameover;
+
+          mode_destroy(
+            MODE_GAMEOVER,
+            &mode_gameover
+          );
+
+          mode_initialize(
+            MODE_GAMEOVER,
+            &mode_gameover,
+            &display
+          );
+          break;
         case MODE_INTRO:
           mode_struct = &mode_intro;
           break;
@@ -170,6 +196,7 @@ int main(int argc, char** argv) {
   
   mode_destroy(MODE_EXIT, &mode_exit);
   mode_destroy(MODE_GAME, &mode_game);
+  mode_destroy(MODE_GAMEOVER, &mode_gameover);
   mode_destroy(MODE_INTRO, &mode_intro);
   mode_destroy(MODE_MENU, &mode_menu);
 

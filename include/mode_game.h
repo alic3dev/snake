@@ -5,6 +5,7 @@
 #include "micro_time.h"
 #include "mode.h"
 #include "display.h"
+#include "score.h"
 
 struct mode_game {
   struct display* display;
@@ -18,6 +19,8 @@ struct mode_game {
   micro_time time_movement_previous;
   unsigned char collided;
   struct position* apple_position;
+  struct score* score;
+  micro_time time_start;
 };
 
 void mode_game_initialize(
