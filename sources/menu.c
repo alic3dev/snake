@@ -25,7 +25,7 @@ void menu_initialize(
   menu->offset.y = 0;
 }
 
-void menu_add_option(
+void menu_option_add(
   struct menu* menu,
   char* label,
   enum menu_action action
