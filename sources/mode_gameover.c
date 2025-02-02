@@ -8,6 +8,7 @@
 #include "display.h"
 #include "menu.h"
 #include "mode.h"
+#include "number_to_string.h"
 #include "score.h"
 
 void mode_gameover_initialize(
@@ -27,51 +28,25 @@ void mode_gameover_initialize(
   );
   strcpy(score_string, "SCORE: ");
 
-  long int score_tally = (
+  char* score_number_string = number_to_string_li(
     mode_gameover->score->score
   );
+  size_t score_number_string_length = strlen(
+    score_number_string
+  );
 
-  do {
-    char score_char = '0' + (score_tally % 10);
+  score_string = realloc(
+    score_string,
+    sizeof(char) * (
+      score_string_length +
+      score_number_string_length
+    )
+  );
 
-    if (score_tally < 10) {
-      score_tally = 0;
-    } else {
-      score_tally = score_tally / 10;
-    }
+  strcat(score_string, score_number_string);
 
-    score_string_length = (
-      score_string_length + 1
-    );
+  free(score_number_string);
 
-    score_string = realloc(
-      score_string,
-      sizeof(char) * score_string_length
-    );
-
-    score_string[score_string_length - 2] = (
-      score_char
-    );
-  } while (score_tally != 0);
-
-  for (
-    size_t i = 0;
-    i < (score_string_length - 8) / 2;
-    ++i
-  ) {
-    score_string[6] = score_string[i + 7];
-    score_string[i + 7] = score_string[
-      score_string_length - (i + 2)
-    ];
-    score_string[
-      score_string_length - (i + 2)
-    ] = (
-      score_string[6]
-    );
-  }
-
-  score_string[6] = ' ';
-  
   menu_option_add(
     &mode_gameover->menu,
     score_string,
@@ -79,6 +54,89 @@ void mode_gameover_initialize(
   );
 
   free(score_string);
+
+  size_t apples_eaten_string_length = 9;
+  char* apples_eaten_string = malloc(
+    sizeof(char) * apples_eaten_string_length
+  );
+  strcpy(apples_eaten_string, "APPLES: ");
+
+  char* apples_eaten_number_string = (
+    number_to_string_ui(
+      mode_gameover->score->apples_eaten
+    )
+  );
+  size_t apples_eaten_number_string_length = (
+    strlen(apples_eaten_number_string)
+  );
+
+  apples_eaten_string = realloc(
+    apples_eaten_string,
+    sizeof(char) * (
+      apples_eaten_string_length +
+      apples_eaten_number_string_length
+    )
+  );
+
+  strcat(
+    apples_eaten_string,
+    apples_eaten_number_string
+  );
+
+  free(apples_eaten_number_string);
+
+  menu_option_add(
+    &mode_gameover->menu,
+    apples_eaten_string,
+    MENU_ACTION_NONE
+  );
+
+  free(apples_eaten_string);
+
+  size_t total_time_string_length = 7;
+  char* total_time_string = malloc(
+    sizeof(char) * total_time_string_length
+  );
+  strcpy(total_time_string, "TIME: ");
+
+  char* total_time_number_string = (
+    number_to_string_li(
+      mode_gameover->score->total_time /
+      1000000
+    )
+  );
+  size_t total_time_number_string_length = strlen(
+    total_time_number_string
+  );
+
+  total_time_string = realloc(
+    total_time_string,
+    sizeof(char) * (
+      total_time_string_length +
+      total_time_number_string_length
+    )
+  );
+
+  strcat(
+    total_time_string,
+    total_time_number_string
+  );
+
+  free(total_time_number_string);
+
+  menu_option_add(
+    &mode_gameover->menu,
+    total_time_string,
+    MENU_ACTION_NONE
+  );
+
+  free(total_time_string);
+
+  menu_option_add(
+    &mode_gameover->menu,
+    "",
+    MENU_ACTION_NONE
+  );
 
   menu_option_add(
     &mode_gameover->menu,
