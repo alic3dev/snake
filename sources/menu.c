@@ -25,7 +25,7 @@ void menu_initialize(
   menu->offset.y = 0;
 }
 
-void menu_add_option(
+void menu_option_add(
   struct menu* menu,
   char* label,
   enum menu_action action
@@ -61,6 +61,14 @@ void menu_add_option(
     option_index
   ].action = action;
 
+  menu->options[
+    option_index
+  ].selectable = (
+    menu->options[option_index].action == 
+    MENU_ACTION_NONE 
+    ? 0 : 1
+  );
+
   if (
     menu->options[option_index].label_length >
     menu->maximum_label_length
@@ -83,6 +91,37 @@ void menu_offset_center(struct menu* menu) {
   );
 }
 
+void menu_index_previous(struct menu* menu) {
+  size_t original_index = menu->index;
+
+  do {
+    if (menu->index == 0) {
+      menu->index = menu->options_length - 1;
+    } else {
+      menu->index = menu->index - 1;
+    }
+  } while (
+    menu->options[menu->index].selectable == 0 &&
+    menu->index != original_index
+  );
+}
+
+
+void menu_index_next(struct menu* menu) {
+  size_t original_index = menu->index;
+
+  do {
+    menu->index = menu->index + 1;
+
+    if (menu->index > menu->options_length - 1) {
+      menu->index = 0;
+    }
+  } while (
+    menu->options[menu->index].selectable == 0 &&
+    menu->index != original_index
+  );
+}
+
 enum menu_action menu_poll(struct menu* menu) {
   enum menu_action menu_action_selected = (
     MENU_ACTION_NONE
@@ -93,21 +132,14 @@ enum menu_action menu_poll(struct menu* menu) {
     case KEY_VALUE_ARROW_UP:
     case KEY_VALUE_W:
     case KEY_VALUE_I:
-      if (menu->index > 0) {
-        menu->index -= 1;
-        menu->display->should_render = 1;
-      }
+      menu_index_previous(menu);
+      menu->display->should_render = 1;
       break;
     case KEY_VALUE_ARROW_DOWN:
     case KEY_VALUE_S:
     case KEY_VALUE_K:
-      if (
-        menu->index <
-        menu->options_length - 1
-      ) {
-        menu->index += 1;
-        menu->display->should_render = 1;
-      }
+      menu_index_next(menu);
+      menu->display->should_render = 1;
       break;
     case KEY_VALUE_ENTER:
     case KEY_VALUE_SPACE:

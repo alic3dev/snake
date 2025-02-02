@@ -5,6 +5,7 @@
 #include "mode.h"
 #include "mode_exit.h"
 #include "mode_game.h"
+#include "mode_gameover.h"
 #include "mode_intro.h"
 #include "mode_menu.h"
 
@@ -22,6 +23,11 @@ void mode_initialize(
     case MODE_GAME:
       return mode_game_initialize(
         (struct mode_game*) mode_struct,
+        display
+      );
+    case MODE_GAMEOVER:
+      return mode_gameover_initialize(
+        (struct mode_gameover*) mode_struct,
         display
       );
     case MODE_INTRO:
@@ -55,6 +61,11 @@ enum MODE mode_poll(
         (struct mode_game*) mode_struct,
         current_micro_time
       );
+    case MODE_GAMEOVER:
+      return mode_gameover_poll(
+        (struct mode_gameover*) mode_struct,
+        current_micro_time
+      );
     case MODE_INTRO:
       return mode_intro_poll(
         (struct mode_intro*) mode_struct,
@@ -85,6 +96,10 @@ void mode_display(
       return mode_game_display(
         (struct mode_game*) mode_struct
       );
+    case MODE_GAMEOVER:
+      return mode_gameover_display(
+        (struct mode_gameover*) mode_struct
+      );
     case MODE_INTRO:
       return mode_intro_display(
         (struct mode_intro*) mode_struct
@@ -111,6 +126,10 @@ void mode_destroy(
     case MODE_GAME:
       return mode_game_destroy(
         (struct mode_game*) mode_struct
+      );
+    case MODE_GAMEOVER:
+      return mode_gameover_destroy(
+        (struct mode_gameover*) mode_struct
       );
     case MODE_INTRO:
       return mode_intro_destroy(

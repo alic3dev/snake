@@ -16,6 +16,7 @@ struct menu_option {
   char* label;
   size_t label_length;
   short int action;
+  unsigned char selectable;
 };
 
 struct menu {
@@ -36,13 +37,16 @@ void menu_initialize(
   struct display*
 );
 
-void menu_add_option(
+void menu_option_add(
   struct menu*,
   char* label,
   enum menu_action action
 );
 
 void menu_offset_center(struct menu*);
+
+void menu_index_previous(struct menu*);
+void menu_index_next(struct menu*);
 
 enum menu_action menu_poll(struct menu*);
 

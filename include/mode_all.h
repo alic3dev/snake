@@ -7,6 +7,7 @@
 
 #include "mode_exit.h"
 #include "mode_game.h"
+#include "mode_gameover.h"
 #include "mode_intro.h"
 #include "mode_menu.h"
 

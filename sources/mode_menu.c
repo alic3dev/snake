@@ -19,13 +19,13 @@ void mode_menu_initialize(
     mode_menu->display
   );
 
-  menu_add_option(
+  menu_option_add(
     &mode_menu->menu,
     "START",
     MENU_ACTION_START
   );
 
-  menu_add_option(
+  menu_option_add(
     &mode_menu->menu,
     "EXIT",
     MENU_ACTION_EXIT

@@ -57,6 +57,12 @@ void mode_game_initialize(
     mode_game->snake_length,
     mode_game->display->terminal_size
   );
+
+  mode_game->score->score = 0;
+  mode_game->score->apples_eaten = 0;
+  mode_game->score->total_time = 0;
+
+  mode_game->time_start = get_micro_time();
 }
 
 enum MODE mode_game_poll(
@@ -239,6 +245,16 @@ enum MODE mode_game_poll(
           free(mode_game->apple_position);
         }
 
+        mode_game->score->score = (
+          mode_game->score->score +
+          100 +
+          (mode_game->score->apples_eaten * 10)
+        );
+
+        mode_game->score->apples_eaten = (
+          mode_game->score->apples_eaten + 1
+        ); 
+
         mode_game->apple_position = place_apple(
           mode_game->snake,
           mode_game->snake_length,
@@ -246,7 +262,11 @@ enum MODE mode_game_poll(
         );
       }
     } else {
-      return MODE_MENU;
+      mode_game->score->total_time = (
+        get_micro_time() -
+        mode_game->time_start
+      );
+      return MODE_GAMEOVER;
     }
 
     mode_game->display->should_render = 1;
