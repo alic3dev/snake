@@ -10,3 +10,18 @@
 (\((\\)))\)) SSSS  N  N  A  A  K  K  EEEE
 ```
 
+Ssssssssnake! 🐍
+
+## building
+
+```sh
+mkdir -p objects
+make
+```
+
+## cleaning
+
+```sh
+make clean
+```
+
