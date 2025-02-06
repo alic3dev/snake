@@ -128,5 +128,7 @@ void* __user_input_get() {
   pthread_mutex_unlock(
     &user_input_thread_running_mutex
   );
+  
+  return NULL;
 }
 

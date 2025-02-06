@@ -1,4 +1,4 @@
-#ifndef __MODE_All_H
+#ifndef __MODE_ALL_H
 #define __MODE_ALL_H
 
 #include "mode.h"
