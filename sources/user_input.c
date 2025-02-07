@@ -66,6 +66,9 @@ void user_input_thread_join() {
 
 void user_input_destroy() {
   pthread_mutex_destroy(&user_input_mutex);
+  pthread_mutex_destroy(
+    &user_input_thread_running_mutex
+  );
 }
 
 void* __user_input_get() { 
