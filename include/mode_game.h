@@ -7,6 +7,8 @@
 #include "display.h"
 #include "score.h"
 
+extern const micro_time default_snake_speed;
+
 struct mode_game {
   struct display* display;
   size_t snake_length;
@@ -16,6 +18,7 @@ struct mode_game {
   enum direction snake_direction;
   enum direction snake_direction_previous;
   micro_time snake_speed;
+  float snake_speed_multiplier;
   micro_time time_movement_previous;
   unsigned char collided;
   struct position* apple_position;
