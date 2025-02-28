@@ -11,6 +11,10 @@
 #include "place_apple.h"
 #include "user_input.h"
 
+const micro_time default_snake_speed = (
+  100000
+);
+
 void mode_game_initialize(
   struct mode_game* mode_game,
   struct display* display
@@ -49,7 +53,12 @@ void mode_game_initialize(
   mode_game->time_movement_previous = (
     get_micro_time()
   );
-  mode_game->snake_speed = 100000;
+  mode_game->snake_speed = default_snake_speed;
+  mode_game->snake_speed_multiplier = 0.95f;
+  mode_game->snake_speed_multiplier_max = 0.99f;
+  mode_game->snake_speed_multiplier_increment = (
+    0.00125f
+  );
   mode_game->collided = 0;
   
   mode_game->apple_position = place_apple(
@@ -249,6 +258,21 @@ enum MODE mode_game_poll(
           mode_game->score->score +
           100 +
           (mode_game->score->apples_eaten * 10)
+        );
+
+        mode_game->snake_speed = (
+          mode_game->snake_speed *
+          mode_game->snake_speed_multiplier
+        );
+        mode_game->snake_speed_multiplier = (
+          mode_game->snake_speed_multiplier
+          <= mode_game->snake_speed_multiplier_max
+          ? (
+            mode_game->snake_speed_multiplier
+            + mode_game->
+                snake_speed_multiplier_increment
+          )
+          : mode_game->snake_speed_multiplier_max
         );
 
         mode_game->score->apples_eaten = (
