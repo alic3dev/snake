@@ -266,7 +266,7 @@ enum MODE mode_game_poll(
         );
         mode_game->snake_speed_multiplier = (
           mode_game->snake_speed_multiplier
-          < mode_game->snake_speed_multiplier_max
+          <= mode_game->snake_speed_multiplier_max
           ? (
             mode_game->snake_speed_multiplier
             + mode_game->
