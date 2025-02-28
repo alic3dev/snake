@@ -55,6 +55,10 @@ void mode_game_initialize(
   );
   mode_game->snake_speed = default_snake_speed;
   mode_game->snake_speed_multiplier = 0.95f;
+  mode_game->snake_speed_multiplier_max = 0.99f;
+  mode_game->snake_speed_multiplier_increment = (
+    0.00125f
+  );
   mode_game->collided = 0;
   
   mode_game->apple_position = place_apple(
@@ -262,11 +266,13 @@ enum MODE mode_game_poll(
         );
         mode_game->snake_speed_multiplier = (
           mode_game->snake_speed_multiplier
-          < 0.99f
+          < mode_game->snake_speed_multiplier_max
           ? (
             mode_game->snake_speed_multiplier
-            + 0.00125f
-          ) : 0.99f
+            + mode_game->
+                snake_speed_multiplier_increment
+          )
+          : mode_game->snake_speed_multiplier_max
         );
 
         mode_game->score->apples_eaten = (

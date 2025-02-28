@@ -19,6 +19,8 @@ struct mode_game {
   enum direction snake_direction_previous;
   micro_time snake_speed;
   float snake_speed_multiplier;
+  float snake_speed_multiplier_max;
+  float snake_speed_multiplier_increment;
   micro_time time_movement_previous;
   unsigned char collided;
   struct position* apple_position;
